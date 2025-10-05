@@ -15,12 +15,18 @@ dotenv.config({ path: './config/.env' })
 const app = express();
 
 //my middlewares
-app.use(cors());
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 
 app.use('/api', registerRouter)
 app.use('/api', loginRouter)
-app.use('/api', authRouter, updateUserRouter)
+app.use('/api/update', authRouter, updateUserRouter) // Protected update route
+app.use('/api/users', updateUserRouter)
 
 //mongoose.connect('URL', {useunifiedtopolgy:'', usenewurlparser:''}).then()
 mongoose.connect(process.env.MONGO_URL)

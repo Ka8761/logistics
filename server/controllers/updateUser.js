@@ -17,10 +17,9 @@ const updateValidationRules = [
   body("phoneCodes").optional().isString(),
   body("paymentCurrency").optional().isString(),
   body("timeZone").optional().isString(),
-  body("imagePreview").optional(),
 ];
 
-updateUserRouter.patch("/update/:id", updateValidationRules,  upload.single("profileImage"),
+updateUserRouter.patch("/:id", updateValidationRules,  upload.single("profileImage"),
   async (req, res) => {
   console.log('updaterouting')
   
@@ -33,8 +32,8 @@ updateUserRouter.patch("/update/:id", updateValidationRules,  upload.single("pro
   try {
       const userId = req.params.id;
 
-      // Build update object
-      const updateData = { ...req.body };
+      // Build update object - EXCLUDE imagePreview
+      const { imagePreview, ...updateData } = req.body; // <-- ADD THIS LINE
 
       // If image uploaded, attach as buffer
       if (req.file) {
@@ -55,10 +54,14 @@ updateUserRouter.patch("/update/:id", updateValidationRules,  upload.single("pro
         return res.status(404).json({ message: "User not found" });
       }
 
+      // Don't send profilePic buffer back in response
+      const userResponse = updatedUser.toObject();
+      delete userResponse.profilePic; // <-- ADD THIS LINE
+
       res.status(200).json({
-  message: "Profile updated successfully",
-    user: updatedUser.toObject({ getters: true, virtuals: false })  // ensures _id is included
-});
+        message: "Profile updated successfully",
+        user: userResponse
+      });
 
     } catch (err) {
       console.error("Update error:", err);
@@ -68,7 +71,7 @@ updateUserRouter.patch("/update/:id", updateValidationRules,  upload.single("pro
 );
 
 
-updateUserRouter.get("/users/:id/profile-pic", async (req, res) => {
+updateUserRouter.get("/:id/profile-pic", async (req, res) => {
   const user = await UserModel.findById(req.params.id);
   if (!user || !user.profilePic?.data) {
     return res.status(404).send("No image found");
