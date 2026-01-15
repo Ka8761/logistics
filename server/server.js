@@ -1,7 +1,6 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import axios from 'axios'
-import cors from 'cors'
 import registerRouter from './controllers/register.js' 
 import loginRouter from './controllers/login.js'
 import authRouter from './middlewares/auth.js'
@@ -15,7 +14,8 @@ dotenv.config({ path: './config/.env' })
 const app = express();
 
 //my middlewares
-app.use(cors());
+import cors from "cors";
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 app.use('/api', registerRouter)
