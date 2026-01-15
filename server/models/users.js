@@ -29,9 +29,10 @@ const userSchema = new mongoose.Schema(
     paymentCurrency: { type: String, default: null },
     timeZone: { type: String, default: null },
      profilePic: {
-    data: Buffer,
-    contentType: String,
-  },
+  data: { type: Buffer, required: false },
+  contentType: { type: String, required: false },
+},
+  
   },
   { timestamps: true }
 );

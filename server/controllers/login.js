@@ -35,6 +35,7 @@ loginRouter.post('/login',
     //if no issues/ all entires are good
     const userPayload = {id:existingUser._id, email:existingUser.email, name:existingUser.name}
     const jwt_token = jwt.sign(userPayload, JWT_SECRETKEY, {expiresIn:'1h'})
+    
 
     return res.status(200).json({
       message:'welcome to home page', 

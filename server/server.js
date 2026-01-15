@@ -20,10 +20,10 @@ app.use(express.json());
 
 app.use('/api', registerRouter)
 app.use('/api', loginRouter)
-app.use('/api', authRouter, updateUserRouter)
+app.use('/api/update', authRouter, updateUserRouter)
 
 //mongoose.connect('URL', {useunifiedtopolgy:'', usenewurlparser:''}).then()
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log('database connected '))
 .catch((err)=>console.error(`error connecting database ${err}`))
 

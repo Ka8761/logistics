@@ -1,0 +1,52 @@
+/* Dark overlay */
+.minirect-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+/* Side panel */
+.minirect-panel {
+  position: fixed;
+  left: 80px; /* aligns with sidebar */
+  top: 0;
+  height: 100vh;
+  width: 300px;
+  background: #f8f9fa;
+  animation: slideIn 0.3s ease forwards;
+  overflow-y: auto;
+}
+
+/* Menu item */
+.menu-item {
+  font-size: 16px;
+}
+
+.menu-link {
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.menu-link:hover {
+  color: orange;
+}
+
+/* Slide animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .minirect-panel {
+    left: 0;
+    width: 80%;
+  }
+}

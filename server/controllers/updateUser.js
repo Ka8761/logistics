@@ -4,10 +4,16 @@ import UserModel from "../models/users.js";
 import multer from 'multer'
 
 const updateUserRouter = express.Router();
+const User = UserModel;
 
+// configure storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'uploads/'),  // create this folder!
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
 
-// Multer setup (store file in memory, not disk)
-const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Example validation (all optional since it's update)
@@ -20,52 +26,41 @@ const updateValidationRules = [
   body("imagePreview").optional(),
 ];
 
-updateUserRouter.patch("/update/:id", updateValidationRules,  upload.single("profileImage"),
-  async (req, res) => {
-  console.log('updaterouting')
-  
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors)
-    return res.status(400).json({ errors: errors.array() });
-  }
-
+updateUserRouter.patch('/:id', upload.single('profileImage'), async (req, res) => {
   try {
-      const userId = req.params.id;
+    console.log("[UPDATE ROUTE] Received request");
+    console.log("[UPDATE ROUTE] Headers:", req.headers);
+    console.log("[UPDATE ROUTE] req.user:", req.user);           // should show decoded JWT
+    console.log("[UPDATE ROUTE] req.body:", req.body);           // should show text fields
+    console.log("[UPDATE ROUTE] req.file:", req.file);           // should show uploaded file info
+    console.log("[UPDATE ROUTE] req.files:", req.files);         // if multiple files
 
-      // Build update object
-      const updateData = { ...req.body };
+    const { email, phoneCodes, phoneNumber, paymentCurrency, timeZone } = req.body;
+    const profileImage = req.file?.filename || req.file?.path;   // or however you save filename
 
-      // If image uploaded, attach as buffer
-      if (req.file) {
-        updateData.profilePic = {
-          data: req.file.buffer,
-          contentType: req.file.mimetype,
-        };
-      }
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        email,
+        phoneCodes,
+        phoneNumber,
+        paymentCurrency,
+        timeZone,
+        profilePicture: profileImage ? `/uploads/${profileImage}` : undefined,
+      },
+      { new: true, runValidators: true }
+    );
 
-      // Update user in MongoDB
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        userId,
-        { $set: updateData },
-        { new: true, runValidators: true }
-      );
-
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      res.status(200).json({
-  message: "Profile updated successfully",
-    user: updatedUser.toObject({ getters: true, virtuals: false })  // ensures _id is included
-});
-
-    } catch (err) {
-      console.error("Update error:", err);
-      res.status(500).json({ message: "Server error" });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-  }
-);
+
+    res.status(200).json({ user: updatedUser });
+
+  } catch (error) {
+    console.error("[UPDATE ROUTE ERROR]:", error);
+    res.status(500).json({ message: "Server error during profile update", error: error.message });
+  }});
 
 
 updateUserRouter.get("/users/:id/profile-pic", async (req, res) => {
