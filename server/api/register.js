@@ -71,10 +71,10 @@ registerRouter.post(
         },
       });
     } catch (error) {
-      console.error("Error registering user:", err);
+      console.error("Error registering user:", err.stack);
       return res
         .status(500)
-        .json({ message: "Server error. Try again later." });
+        .json({ error: error.message });
     }
   }
 );

@@ -67,25 +67,4 @@ updateUserRouter.patch('/:id', upload.single('profileImage'), async (req, res) =
     res.status(500).json({ message: "Server error during profile update", error: error.message });
   }});
 
-
-
-  
-// updateUserRouter.get("/users/:id/profile-pic", (req, res, next) => {
-//   // Skip auth check – just proceed
-//   console.log("[PROFILE-PIC GET] Public route accessed for user ID:", req.params.id);
-//   next();
-// }, async (req, res) => {
-//   try {
-//     const user = await UserModel.findById(req.params.id).select('profilePic');
-//     if (!user || !user.profilePic?.data) {
-//       return res.status(404).send("No image found");
-//     }
-//     res.set("Content-Type", user.profilePic.contentType);
-//     res.send(user.profilePic.data);
-//   } catch (err) {
-//     console.error("[PROFILE-PIC GET ERROR]:", err);
-//     res.status(500).send("Server error loading profile picture");
-//   }
-// });
-
 export default updateUserRouter;
