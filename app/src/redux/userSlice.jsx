@@ -9,7 +9,7 @@ export const loginUser = createAsyncThunk(
       const data = response.data;
          console.log(data)
       if (data.user?._id || data.user?.id) {
-        const imageUrl = `http://localhost:5000/api/users/${data.user._id}/profile-pic?t=${Date.now()}`;
+        const imageUrl = `https://logisticsserver.vercel.app/api/users/${data.user._id}/profile-pic?t=${Date.now()}`;
         data.user.profilePictureUrl = imageUrl;  
       }
       const cleanUser = {

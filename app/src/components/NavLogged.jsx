@@ -55,7 +55,7 @@ const NavLogged = ({ toggleSidebar }) => {
         {/* User info */}
         <Nav className="ms-auto align-items-center gap-3">
           <Image
-  src={`http://localhost:5000/api/users/${user._id || user.id}/profile-pic?t=${Date.now()}`}
+  src={`${process.env.REACT_APP_API_URL}/api/users/${user._id || user.id}/profile-pic?t=${Date.now()}`}
   roundedCircle
   width={32}
   height={32}

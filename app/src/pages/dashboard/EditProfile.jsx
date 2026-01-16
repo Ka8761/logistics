@@ -35,7 +35,7 @@ const EditProfile = () => {
   useEffect(() => {
   if (data?._id) {
     const cacheBuster = Date.now();
-    const url = `http://localhost:5000/api/update/${data._id}/profile-pic?t=${cacheBuster}`;
+    const url = `${process.env.REACT_APP_API_URL}/api/update/${data._id}/profile-pic?t=${cacheBuster}`;
 
     const loadProtectedImage = async () => {
       try {
@@ -124,14 +124,14 @@ try {
       setSelectedFile(null);
       // 3. Update profile pic URL with cache buster
       const cacheBuster = Date.now();
-      const freshUrl = `http://localhost:5000/api/update/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
+      const freshUrl = `${process.env.REACT_APP_API_URL}/api/update/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
       setImagePreview(freshUrl);
       setImageKey(cacheBuster);
 
       // 4. Extra safety refresh after small delay (helps with slow disk/fs sync in dev)
       setTimeout(() => {
         const finalBuster = Date.now();
-        const finalUrl = `http://localhost:5000/api/update/${updatedUser._id}/profile-pic?t=${finalBuster}`;
+        const finalUrl = `${process.env.REACT_APP_API_URL}/api/update/${updatedUser._id}/profile-pic?t=${finalBuster}`;
         setImagePreview(finalUrl);
         setImageKey(finalBuster);
       }, 400);
