@@ -23,14 +23,49 @@ const EditProfile = () => {
   const timeZones = Intl.supportedValuesOf("timeZone");
 
   // Refresh profile picture URL when user data changes (cache busting)
+  // useEffect(() => {
+  //   if (data?._id) {
+  //     const cacheBuster = Date.now();
+  //     const url = `http://localhost:5000/api/update/${data._id}/profile-pic?t=${cacheBuster}`;
+  //     setImagePreview(url);
+  //     setImageKey(cacheBuster);
+  //   }
+  // }, [data?._id, data?.updatedAt]);
+
   useEffect(() => {
-    if (data?._id) {
-      const cacheBuster = Date.now();
-      const url = `http://localhost:5000/api/update/${data._id}/profile-pic?t=${cacheBuster}`;
-      setImagePreview(url);
-      setImageKey(cacheBuster);
-    }
-  }, [data?._id, data?.updatedAt]);
+  if (data?._id) {
+    const cacheBuster = Date.now();
+    const url = `http://localhost:5000/api/update/${data._id}/profile-pic?t=${cacheBuster}`;
+
+    const loadProtectedImage = async () => {
+      try {
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        const token = userInfo?.token;
+
+        const res = await fetch(url, {
+          headers: {
+            autheader: `Bearer ${token}`,  // or 'authheader' if backend uses that
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed");
+
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setImagePreview(blobUrl);
+        setImageKey(cacheBuster);
+
+        // Cleanup on unmount or next load
+        return () => URL.revokeObjectURL(blobUrl);
+      } catch (err) {
+        console.error("Protected image load failed:", err);
+        setImagePreview("/default-profile.png");
+      }
+    };
+
+    loadProtectedImage();
+  }
+}, [data?._id, data?.updatedAt]);
 
   // Handle file selection → show local preview immediately
   const handleProfilepicChange = (e) => {
@@ -65,10 +100,6 @@ const EditProfile = () => {
 
  const updateProfile = async (e) => {
   e.preventDefault();
-
-  console.log("Update button clicked – starting dispatch");
-
-  // Clear previous errors and show loading
   setLocalError("");
   setIsUpdating(true);
 
@@ -85,20 +116,13 @@ const EditProfile = () => {
   }
 try {
   const updatedUser = await dispatch(updateUser(formData)).unwrap();
-  // updatedUser is now the user object { _id, email, ... }
   console.log("Updated user:", updatedUser);
-
-    // Now updatedUser is the actual user object { _id, email, phoneNumber, ... }
     if (updatedUser?._id) {
-      // 1. Clean up local blob preview (if it was used)
       if (imagePreview && imagePreview.startsWith("blob:")) {
         URL.revokeObjectURL(imagePreview);
       }
-
-      // 2. Forget the selected file
       setSelectedFile(null);
-
-      // 3. Immediately reload image from server with fresh timestamp
+      // 3. Update profile pic URL with cache buster
       const cacheBuster = Date.now();
       const freshUrl = `http://localhost:5000/api/update/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
       setImagePreview(freshUrl);

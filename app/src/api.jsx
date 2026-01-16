@@ -1,20 +1,20 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'process.env.REACT_APP_API_URL' || 'http://localhost:5000/api ',
+    baseURL: 'http://localhost:5000/api',  // ← removed trailing space
     headers: { "Content-Type": "application/json" }
-})
+});
 
 api.interceptors.request.use((config) => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     
-    console.log("[Interceptor] URL:", config.url);  // ← Add this
-    console.log("[Interceptor] userInfo.token exists?", !!userInfo?.token);  // ← Add this
+    console.log("[Interceptor] URL:", config.url);
+    console.log("[Interceptor] userInfo.token exists?", !!userInfo?.token);
     
     if (!config.url.includes('/login') && !config.url.includes('/register')) {
         if (userInfo?.token) {
             config.headers["authorization"] = `Bearer ${userInfo.token}`;
-            console.log("[Interceptor] Added authorization header");  // ← Add this
+            console.log("[Interceptor] Added authorization header");
         } else {
             console.log("[Interceptor] No token found in userInfo");
         }
@@ -23,16 +23,15 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-    (response) => response, // pass through on success
+    (response) => response,
     (error) => {
         if (error.response && error.response.status === 403) {
-            // Token expired or invalid -> log out
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "/login"; // redirect to login
+            window.location.href = "/login";
         }
         return Promise.reject(error);
     }
 );
 
-export default api
+export default api;

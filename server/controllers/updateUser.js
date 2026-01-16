@@ -7,16 +7,16 @@ const updateUserRouter = express.Router();
 const User = UserModel;
 
 // configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),  // create this folder!
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, 'uploads/'),  // create this folder!
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + file.originalname);
+//   }
+// });
 
+const storage = multer.memoryStorage();  
 const upload = multer({ storage });
 
-// Example validation (all optional since it's update)
 const updateValidationRules = [
   body("email").optional().isEmail().withMessage("Invalid email"),
   body("phoneNumber").optional().isNumeric().withMessage("Phone must be numeric"),
@@ -35,8 +35,9 @@ updateUserRouter.patch('/:id', upload.single('profileImage'), async (req, res) =
     console.log("[UPDATE ROUTE] req.file:", req.file);           // should show uploaded file info
     console.log("[UPDATE ROUTE] req.files:", req.files);         // if multiple files
 
-    const { email, phoneCodes, phoneNumber, paymentCurrency, timeZone } = req.body;
-    const profileImage = req.file?.filename || req.file?.path;   // or however you save filename
+    const { email, phoneCodes, phoneNumber, paymentCurrency, timeZone } = req.body; 
+    const profileImage = req.file; // multer puts the file info here
+    console.log("[UPDATE ROUTE] profileImage:", profileImage);
 
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
@@ -46,7 +47,11 @@ updateUserRouter.patch('/:id', upload.single('profileImage'), async (req, res) =
         phoneNumber,
         paymentCurrency,
         timeZone,
-        profilePicture: profileImage ? `/uploads/${profileImage}` : undefined,
+        profilePicture: req.file ? {
+  data: req.file.buffer,      
+  contentType: req.file.mimetype  
+} : undefined,
+
       },
       { new: true, runValidators: true }
     );
@@ -63,14 +68,24 @@ updateUserRouter.patch('/:id', upload.single('profileImage'), async (req, res) =
   }});
 
 
-updateUserRouter.get("/users/:id/profile-pic", async (req, res) => {
-  const user = await UserModel.findById(req.params.id);
-  if (!user || !user.profilePic?.data) {
-    return res.status(404).send("No image found");
-  }
-  res.set("Content-Type", user.profilePic.contentType);
-  res.send(user.profilePic.data);
-});
 
+  
+// updateUserRouter.get("/users/:id/profile-pic", (req, res, next) => {
+//   // Skip auth check – just proceed
+//   console.log("[PROFILE-PIC GET] Public route accessed for user ID:", req.params.id);
+//   next();
+// }, async (req, res) => {
+//   try {
+//     const user = await UserModel.findById(req.params.id).select('profilePic');
+//     if (!user || !user.profilePic?.data) {
+//       return res.status(404).send("No image found");
+//     }
+//     res.set("Content-Type", user.profilePic.contentType);
+//     res.send(user.profilePic.data);
+//   } catch (err) {
+//     console.error("[PROFILE-PIC GET ERROR]:", err);
+//     res.status(500).send("Server error loading profile picture");
+//   }
+// });
 
 export default updateUserRouter;

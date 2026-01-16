@@ -18,11 +18,11 @@ const DashboardHome = () => {
   const [display, setDisplay] = useState()
 
   const dispatch = useDispatch()
-  function getProfilepic(){
-    if(data?._id){
-      return `http://localhost:5000/api/users/${data._id}/profile-pic?t=${Date.now()}`
-    }
-  };
+  // function getProfilepic(){
+  //   if(data?._id){
+  //     return `http://localhost:5000/api/users/${data._id}/profile-pic?t=${Date.now()}`
+  //   }
+  // };
   
   return (
     <div className="">
@@ -46,7 +46,7 @@ const DashboardHome = () => {
             }}
           >
             <img
-            src={getProfilepic()}
+            src={`http://localhost:5000/api/users/${data._id || data.id}/profile-pic?t=${Date.now()}`}
               style={{
                 width: "50px",
                 height: "50px",

@@ -5,19 +5,36 @@ export const loginUser = createAsyncThunk(
   "user/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/login", { email, password }); // or your endpoint
+      const response = await api.post("/login", { email, password }); 
       const data = response.data;
+         console.log(data)
+      if (data.user?._id || data.user?.id) {
+        const imageUrl = `http://localhost:5000/api/users/${data.user._id}/profile-pic?t=${Date.now()}`;
+        data.user.profilePictureUrl = imageUrl;  
+      }
+      const cleanUser = {
+        ...data.user,
+        profilePicture: undefined,   
+        profilePic: undefined,
+        profileImage: undefined
+      };
 
-      // Return what you need (token + user usually)
+      const storedUserInfo = {
+        user: cleanUser,
+        token: data.token
+      };
+      localStorage.setItem("userInfo", JSON.stringify(storedUserInfo));
+      
       return {
         token: data.token,
-        user: data.user || data, // adjust based on response shape
+        user: data.user, 
       };
     } catch (err) {
       return rejectWithValue(err.response?.data || { message: "Login failed" });
     }
   }
 );
+
 
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -44,36 +61,33 @@ export const updateUser = createAsyncThunk(
   "user/update",
   async (formData, { getState, rejectWithValue }) => {
     try {
-      // 1. Get userId from Redux state or localStorage fallback
       const { user } = getState();
       const userId = user.data?._id || user.data?.id || localStorage.getItem("userId");
 
       if (!userId) {
         throw new Error("User ID not found – please log in again");
       }
-
-      // 2. Send PATCH request with multipart/form-data (for file + fields)
       const response = await api.patch(`/update/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+     const storedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
+if (storedUserInfo) {
+  // Strip image data before saving to storage
+  const cleanUser = {
+    ...response.data.user,
+    profilePicture: undefined,
+    profilePic: undefined,
+    profileImage: undefined
+  };
+  storedUserInfo.user = cleanUser;
+  localStorage.setItem("userInfo", JSON.stringify(storedUserInfo));
+}
 
-      // 3. Optional: Update localStorage with the fresh user data
-      const storedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if (storedUserInfo) {
-        storedUserInfo.user = response.data.user;
-        localStorage.setItem("userInfo", JSON.stringify(storedUserInfo));
-      }
-
-      // 4. Return the updated user object
-      //    → this is what .unwrap() will give you in the component
       return response.data.user;
-
     } catch (err) {
       console.error("Update user thunk failed:", err);
-
-      // Handle validation/field errors from backend (express-validator style)
       if (err.response?.data?.errors) {
         const fieldErrors = {};
         err.response.data.errors.forEach((error) => {

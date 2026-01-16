@@ -22,15 +22,21 @@ const EditProfile = () => {
 
   const timeZones = Intl.supportedValuesOf("timeZone");
 
-  // Refresh profile picture URL when user data changes (cache busting)
-  useEffect(() => {
-    if (data?._id) {
+ useEffect(() => {
+  if (data?._id) {
+    if (data.profilePictureUrl) {        // 1. Use pre-converted image (if exists)
+      setImagePreview(data.profilePictureUrl);
+    } else {                             // 2. Fetch fresh from server endpoint
       const cacheBuster = Date.now();
-      const url = `http://localhost:5000/api/update/${data._id}/profile-pic?t=${cacheBuster}`;
+      const url = `http://localhost:5000/api/users/${data._id}/profile-pic?t=${cacheBuster}`;
       setImagePreview(url);
       setImageKey(cacheBuster);
     }
-  }, [data?._id, data?.updatedAt]);
+  } else {
+    setImagePreview(null);
+  }
+}, [data?._id, data?.updatedAt]);
+
 
   // Handle file selection → show local preview immediately
   const handleProfilepicChange = (e) => {
@@ -67,8 +73,6 @@ const EditProfile = () => {
     e.preventDefault();
 
     console.log("Update button clicked – starting dispatch");
-
-    // Clear previous errors and show loading
     setLocalError("");
     setIsUpdating(true);
 
@@ -83,32 +87,33 @@ const EditProfile = () => {
       console.log("Uploading file:", selectedFile.name, selectedFile.size);
       formData.append("profileImage", selectedFile);
     }
-
+if (selectedFile) {
+  console.log("File being sent:", selectedFile.name, selectedFile.type, selectedFile.size);
+} else {
+  console.log("No file selected for upload");
+}
     try {
       const updatedUser = await dispatch(updateUser(formData)).unwrap();
       // updatedUser is now the user object { _id, email, ... }
       console.log("Updated user:", updatedUser);
+      console.log("image", updatedUser.profileImage);
 
-      // ADDED: Post-update refresh logic (this is what worked for saving/updating the picture)
       if (updatedUser?._id) {
-        // 1. Clean up local blob preview (if it was used)
         if (imagePreview && imagePreview.startsWith("blob:")) {
           URL.revokeObjectURL(imagePreview);
         }
-
-        // 2. Forget the selected file
         setSelectedFile(null);
 
         // 3. Immediately reload image from server with fresh timestamp
         const cacheBuster = Date.now();
-        const freshUrl = `http://localhost:5000/api/update/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
+        const freshUrl = `http://localhost:5000/api/users/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
         setImagePreview(freshUrl);
         setImageKey(cacheBuster);
 
         // 4. Extra safety refresh after small delay (helps with slow disk/fs sync in dev)
         setTimeout(() => {
           const finalBuster = Date.now();
-          const finalUrl = `http://localhost:5000/api/update/${updatedUser._id}/profile-pic?t=${finalBuster}`;
+          const finalUrl = `http://localhost:5000/api/users/${updatedUser._id}/profile-pic?t=${finalBuster}`;
           setImagePreview(finalUrl);
           setImageKey(finalBuster);
         }, 400);
@@ -164,7 +169,7 @@ const EditProfile = () => {
                 style={{ width: "150px", height: "150px", objectFit: "cover" }}
                 onClick={() => setShowUpload((prev) => !prev)}
                 onError={(e) => {
-                  console.error("Image failed to load:", imagePreview);
+                  e.target.onerror = null;
                   e.target.src = "/default-profile.png";
                 }}
                 crossOrigin="anonymous"

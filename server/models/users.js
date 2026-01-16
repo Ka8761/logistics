@@ -28,11 +28,10 @@ const userSchema = new mongoose.Schema(
   // 🔹 Optional fields for profile updates
     paymentCurrency: { type: String, default: null },
     timeZone: { type: String, default: null },
-     profilePic: {
-  data: { type: Buffer, required: false },
-  contentType: { type: String, required: false },
-},
-  
+   profilePicture: {
+    data: Buffer,        // <- Binary image data
+    contentType: String  // <- 'image/jpeg', etc
+  }
   },
   { timestamps: true }
 );

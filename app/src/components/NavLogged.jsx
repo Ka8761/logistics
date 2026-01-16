@@ -3,10 +3,13 @@ import { Navbar, Nav, Container, Dropdown, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../redux/userSlice";
+import logo from '../assets/logo.png';
+// import { useState, useEffect } from "react";
 
 const NavLogged = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // const [profilePic, setProfilePic] = useState(null);
   const { data: user, token } = useSelector((state) => state.user);
 
   const handleLogout = () => {
@@ -14,8 +17,8 @@ const NavLogged = ({ toggleSidebar }) => {
     navigate("/login");
   };
 
-  // If not logged in, do not render
-  if (!token) return null;
+    if (!token) return null;
+
 
   return (
     <Navbar bg="white" fixed="top" className="shadow-sm">
@@ -33,25 +36,34 @@ const NavLogged = ({ toggleSidebar }) => {
         </div>
 
         {/* Brand */}
-        <Navbar.Brand
-          style={{ cursor: "pointer", fontWeight: "600" }}
-          onClick={() => navigate("/dashboard")}
-        >
-          Dashboard
-        </Navbar.Brand>
+    <Navbar.Brand
+  style={{ cursor: "pointer", fontWeight: "600" }}
+  onClick={() => navigate("/dashboard")}
+>
+  <img 
+    src={logo} 
+    alt="Logo"
+    style={{ 
+      height: "50px", 
+      width: "auto",
+      marginRight: "8px" 
+    }}
+  />
+</Navbar.Brand>
+
 
         {/* User info */}
         <Nav className="ms-auto align-items-center gap-3">
           <Image
-            src={
-              user?._id
-                ? `http://localhost:5000/api/update/${user._id}/profile-pic?t=${Date.now()}`
-                : "https://via.placeholder.com/32"
-            }
-            roundedCircle
-            width={32}
-            height={32}
-          />
+  src={`http://localhost:5000/api/users/${user._id || user.id}/profile-pic?t=${Date.now()}`}
+  roundedCircle
+  width={32}
+  height={32}
+  onError={(e) => {
+    e.target.src = "/default-profile.png"; 
+  }}
+/>
+
 
           <Dropdown align="end">
             <Dropdown.Toggle size="sm" variant="light">

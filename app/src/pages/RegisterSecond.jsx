@@ -113,6 +113,8 @@ const RegisterSecond = ({
     } else {
       signupDetails.pickupOffice = pickupOffice;
     }
+    console.log("Sending to server:", JSON.stringify(signupDetails, null, 2));
+    // const response = await api.post("/register", signupDetails);
 
    dispatch(registerUser(signupDetails));
   };

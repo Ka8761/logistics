@@ -24,8 +24,6 @@ loginRouter.post('/login',
     if (!existingUser){
         return res.status(401).json({message:'User doesnt exist. Sign up'})
     }
-
-    //check for if password is correct/rhymes
     try{
     const dehashPassword = await bcrypt.compare(password, existingUser.password )
      if (!dehashPassword) {
@@ -52,10 +50,9 @@ loginRouter.post('/login',
         city:existingUser.city ,
         state:existingUser.state ,
         country:existingUser.country ,
-        zipCode: existingUser.zipCode
-      }
-    })
-   }
+        zipCode: existingUser.zipCode,
+    }
+  })}
    catch(err){
     console.error('Login error', err.message)
     return res.status(500).json({message:'Server error. Try again later'})

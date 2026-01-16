@@ -32,6 +32,7 @@ const Register = () => {
 
   const handleStepOneSubmit = (e) => {
     e.preventDefault();
+    
     if (!firstName || !lastName || !email || !password) {
       setLocalError("Please fill out all required fields.");
       return;
