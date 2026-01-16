@@ -14,7 +14,13 @@ registerRouter.post(
     if (!errors.isEmpty()) { //if its is NOT true that errorsisempty....then......
       return res.status(401).json({ errors: errors.array() }); //..then return the errors in an arrary form
     }
-
+if (req.method === 'POST') {
+    console.log('POST REGISTER HIT:', req.body);
+    res.json({ success: true, message: 'register works' });
+  } else {
+    res.status(405).json({ error: 'Method not allowed' });
+  }
+  
     const {
       firstName,
       lastName,
@@ -78,5 +84,6 @@ registerRouter.post(
     }
   }
 );
+
 
 export default registerRouter;
