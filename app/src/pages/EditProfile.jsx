@@ -28,7 +28,7 @@ const EditProfile = () => {
       setImagePreview(data.profilePictureUrl);
     } else {                             // 2. Fetch fresh from server endpoint
       const cacheBuster = Date.now();
-      const url = `http://localhost:5000/api/users/${data._id}/profile-pic?t=${cacheBuster}`;
+      const url = `${process.env.REACT_APP_API_URL}/users/${data._id}/profile-pic?t=${cacheBuster}`;
       setImagePreview(url);
       setImageKey(cacheBuster);
     }
@@ -106,14 +106,14 @@ if (selectedFile) {
 
         // 3. Immediately reload image from server with fresh timestamp
         const cacheBuster = Date.now();
-        const freshUrl = `http://localhost:5000/api/users/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
+        const freshUrl = `${process.env.REACT_APP_API_URL}/users/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
         setImagePreview(freshUrl);
         setImageKey(cacheBuster);
 
         // 4. Extra safety refresh after small delay (helps with slow disk/fs sync in dev)
         setTimeout(() => {
           const finalBuster = Date.now();
-          const finalUrl = `http://localhost:5000/api/users/${updatedUser._id}/profile-pic?t=${finalBuster}`;
+          const finalUrl = `${process.env.REACT_APP_API_URL}/users/${updatedUser._id}/profile-pic?t=${finalBuster}`;
           setImagePreview(finalUrl);
           setImageKey(finalBuster);
         }, 400);

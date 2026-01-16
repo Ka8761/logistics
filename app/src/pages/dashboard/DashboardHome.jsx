@@ -46,7 +46,7 @@ const DashboardHome = () => {
             }}
           >
             <img
-            src={`${process.env.REACT_APP_API_URL}/api/users/${data._id || data.id}/profile-pic?t=${Date.now()}`}
+            src={`${process.env.REACT_APP_API_URL}/users/${data._id || data.id}/profile-pic?t=${Date.now()}`}
               style={{
                 width: "50px",
                 height: "50px",
