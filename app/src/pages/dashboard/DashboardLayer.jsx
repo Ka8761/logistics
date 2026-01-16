@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import NavLogged from "../../components/NavLogged";
-import Navigationbar from "../../components/Navbar";
+// import { useSelector } from "react-redux";
+// import NavLogged from "../../components/NavLogged";
+// import Navigationbar from "../../components/Navbar";
 import LeftIcons from "./components/LeftIcons";
 import MiniRect from "./components/MiniRect";
 

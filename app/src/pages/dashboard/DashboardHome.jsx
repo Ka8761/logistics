@@ -10,14 +10,14 @@ import SelectWarehouse, { warehouses } from "./components/SelectWarehouse";
 
 const DashboardHome = () => {
     const {data} = useSelector((state)=>state.user)
-  const [fullname, setFullname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  // const [fullname, setFullname] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [phone, setPhone] = useState("");
   const [selectedWarehouse, setSelectedWarehouse] = useState(null);
   const [activeTab, setActiveTab] = useState("viewshipment");
-  const [display, setDisplay] = useState()
+  // const [display, setDisplay] = useState()
 
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   // function getProfilepic(){
   //   if(data?._id){
   //     return `http://localhost:5000/api/users/${data._id}/profile-pic?t=${Date.now()}`

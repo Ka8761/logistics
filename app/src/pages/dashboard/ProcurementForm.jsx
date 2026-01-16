@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 const ProcurementForm = () => {
   const dispatch = useDispatch()
-  const { loading, error, sucess } = useSelector((state) => state.procurement)
+  //const { loading, error, sucess } = useSelector((state) => state.procurement)
 
   const [selectedWarehouse, setSelectedWarehouse] = useState(null)
   const [addedCharges, setAddedCharges] = useState('')
