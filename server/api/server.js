@@ -1,11 +1,11 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import axios from 'axios'
-import registerRouter from './controllers/register.js' 
-import loginRouter from './controllers/login.js'
-import authRouter from './middlewares/auth.js'
-import updateUserRouter from './controllers/updateUser.js'
-import UserModel from './models/users.js'
+import registerRouter from './register.js' 
+import loginRouter from './login.js'
+import authRouter from '../middlewares/auth.js'
+import updateUserRouter from './updateUser.js'
+import UserModel from '../models/users.js'
 import dotenv from 'dotenv'
 //my middlewares
 import cors from "cors";
