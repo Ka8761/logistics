@@ -37,11 +37,14 @@ app.get('/api/users/:id/profile-pic', async (req, res) => {
 
 app.use('/api/update', authRouter, updateUserRouter)
 
-//mongoose.connect('URL', {useunifiedtopolgy:'', usenewurlparser:''}).then()
 mongoose.connect(process.env.MONGO_URI)
-.then(()=>console.log('database connected '))
-.catch((err)=>console.error(`error connecting database ${err}`))
-
+  .then(() => {
+  console.log('database connected')
+  console.log("MONGO_URI:", process.env.MONGO_URI ? "set" : "MISSING")})
+  .catch((err) => {
+    console.error('MongoDB connection error on Vercel:', err.message);
+    console.error('Full error:', err);
+  });
 //my basic routes
 app.get('/', (req,res)=>{
     res.json({message:'server is running now'})
