@@ -8,16 +8,10 @@ import UserModel from '../models/users.js'
 import dotenv from 'dotenv'
 //my middlewares
 import cors from "cors";
+import multer from 'multer';
 dotenv.config({ path: './config/.env' })
 
 const app = express();
-
-app.use(cors({
-  origin: ['https://logistics-cargoextra.vercel.app'], 
-  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], 
-  credentials: true, 
-  allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
-}));
 
 //CORS FIRST
 const allowedOriginlink = 'https://logistics-cargoextra.vercel.app';
@@ -39,6 +33,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+  console.log('database connected')
+  console.log("MONGO_URI:", process.env.MONGO_URI ? "set" : "MISSING")})
+  .catch((err) => {
+    console.error('MongoDB connection error on Vercel:', err.message);
+    console.error('Full error:', err);
+  });
+
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
 app.use('/uploads', express.static('uploads'));
@@ -56,15 +59,13 @@ app.get('/api/users/:id/profile-pic', async (req, res) => {
 
 app.use('/api/update', authRouter, updateUserRouter)
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-  console.log('database connected')
-  console.log("MONGO_URI:", process.env.MONGO_URI ? "set" : "MISSING")})
-  .catch((err) => {
-    console.error('MongoDB connection error on Vercel:', err.message);
-    console.error('Full error:', err);
-  });
 //my basic routes
+// app.use(cors({
+//   origin: ['https://logistics-cargoextra.vercel.app'], 
+//   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], 
+//   credentials: true, 
+//   allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
+// }));
 app.get('/', (req,res)=>{
     res.json({message:'server is running now'})
 })
