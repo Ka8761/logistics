@@ -19,19 +19,20 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
 }));
 
-// CORS FIRST
-// const allowedOrigin = 'https://logistics-cargoextra.vercel.app';
+//CORS FIRST
+const allowedOrigin = 'https://logistics-cargoextra.vercel.app';
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', allowedOrigin);
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//   if (req.method === 'OPTIONS') {
-//     return res.sendStatus(200);
-//   }
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', allowedOrigin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.options('*', cors());
 
 app.use(express.json());
@@ -52,7 +53,6 @@ app.get('/api/users/:id/profile-pic', async (req, res) => {
   res.set("Content-Type", user.profilePicture.contentType);
   res.send(user.profilePicture.data);
 });
-
 
 app.use('/api/update', authRouter, updateUserRouter)
 
