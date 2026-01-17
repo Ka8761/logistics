@@ -16,7 +16,6 @@ const app = express();
  app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.use(cors({ origin: "*" }));
 app.use(cors({ origin: ["https://logistics-cargoextra.vercel.app/"] }));  // add your frontend Vercel URL
 
 app.use('/api', registerRouter)
@@ -58,7 +57,4 @@ app.use((err, req, res, next) => {
 });
 
 
-// app.listen(process.env.PORT || 5000, () => {
-//   console.log(`Server running on port ${process.env.PORT || 5000}`);
-// });
 export default app;
