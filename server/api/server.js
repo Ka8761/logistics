@@ -21,6 +21,7 @@ app.use(cors({
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
 }));
+app.options('*', cors());
 
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
