@@ -5,7 +5,7 @@ export const loginUser = createAsyncThunk(
   "user/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/login", { email, password }); 
+      const response = await api.post("/api/auth/login", { email, password }); 
       const data = response.data;
          console.log(data)
       if (data.user?._id || data.user?.id) {
