@@ -13,12 +13,13 @@ dotenv.config({ path: './config/.env' })
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://logistics-cargoextra.vercel.app'], 
+  origin: ['https://logistics-cargoextra.vercel.app'], 
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], 
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
 }));
-a// CORS FIRST
+
+// CORS FIRST
 // const allowedOrigin = 'https://logistics-cargoextra.vercel.app';
 
 // app.use((req, res, next) => {
