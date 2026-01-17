@@ -1,7 +1,8 @@
 {
-  "name": "app",
+  "name": "logistics-cargoextra",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://Ka8761.github.io/logistics-cargoextra",
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
     "@testing-library/dom": "^10.4.1",
@@ -25,18 +26,19 @@
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scrips eject"
+    "eject": "react-scrips eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ],
-     "rules": {
-      "no-unused-vars": "off" 
+    "rules": {
+      "no-unused-vars": "off"
     }
   },
-  
   "browserslist": {
     "production": [
       ">0.2%",
@@ -48,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
