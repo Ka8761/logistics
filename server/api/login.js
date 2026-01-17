@@ -19,8 +19,10 @@ loginRouter.post('/login',
     }
    
     const {email, password} = req.body;
+    console.log("🔍 LOGIN ATTEMPT:", email);
     //check for if user is available
     const existingUser = await UserModel.findOne({email:email.toLowerCase()})
+     console.log("🔍 USER FOUND:", !!existingUser, existingUser?.email);
     if (!existingUser){
         return res.status(401).json({message:'User doesnt exist. Sign up'})
     }
