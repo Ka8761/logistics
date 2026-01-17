@@ -15,12 +15,11 @@ const app = express();
  app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const cors = require('cors');
-
 app.use(cors({
-  origin: 'https://logistics-cargoextra.vercel.app', 
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: ['http://localhost:3000', 'https://logistics-cargoextra.vercel.app'], 
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], 
+  credentials: true, 
+  allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
 }));
 
 app.use('/api', registerRouter)
