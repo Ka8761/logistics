@@ -1,6 +1,5 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import axios from 'axios'
 import registerRouter from './register.js' 
 import loginRouter from './login.js'
 import authRouter from '../middlewares/auth.js'
@@ -13,13 +12,13 @@ dotenv.config({ path: './config/.env' })
 
 
 const app = express();
- app.use(express.json({ limit: '10mb' }));
+ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(cors({ origin: ["https://logistics-cargoextra.vercel.app/"] }));  // add your frontend Vercel URL
 
-app.use('/api', registerRouter)
-app.use('/api', loginRouter)
+app.use('/api/auth', registerRouter)
+app.use('/api/auth', loginRouter)
 app.use('/uploads', express.static('uploads'));
 
 app.get('/api/users/:id/profile-pic', async (req, res) => {
