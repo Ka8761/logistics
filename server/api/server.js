@@ -10,11 +10,8 @@ import dotenv from 'dotenv'
 import cors from "cors";
 dotenv.config({ path: './config/.env' })
 
-
 const app = express();
- app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-const cors = require('cors');
+
 app.use(cors({
   origin: ['http://localhost:3000', 'https://logistics-cargoextra.vercel.app'], 
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], 
@@ -22,19 +19,23 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'authheader']  
 }));
 a// CORS FIRST
-const allowedOrigin = 'https://logistics-cargoextra.vercel.app';
+// const allowedOrigin = 'https://logistics-cargoextra.vercel.app';
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', allowedOrigin);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', allowedOrigin);
+//   res.header('Access-Control-Allow-Credentials', 'true');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   if (req.method === 'OPTIONS') {
+//     return res.sendStatus(200);
+//   }
+//   next();
+// });
 app.options('*', cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
 
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
