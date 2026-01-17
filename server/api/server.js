@@ -14,8 +14,14 @@ dotenv.config({ path: './config/.env' })
 const app = express();
  app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+const cors = require('cors');
 
-app.use(cors({ origin: ["https://logistics-cargoextra.vercel.app/"] }));  // add your frontend Vercel URL
+app.use(cors({
+  origin: 'https://logistics-cargoextra.vercel.app/',  // YOUR FRONTEND URL
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
