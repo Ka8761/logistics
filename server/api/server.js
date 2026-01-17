@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(cors({ origin: ["https://logistics-cargoextra.vercel.app/"] }));  // add your frontend Vercel URL
 
-app.use('/api/auth', registerRouter)
+app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
 app.use('/uploads', express.static('uploads'));
 
