@@ -7,6 +7,7 @@ import updateUserRouter from './updateUser.js'
 import UserModel from '../models/users.js'
 import dotenv from 'dotenv'
 //my middlewares
+//vercel deploy --prod --force
 import cors from "cors";
 import multer from 'multer';
 dotenv.config({ path: './config/.env' })
@@ -49,6 +50,10 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
 app.use('/uploads', express.static('uploads'));
+app.get('/*splat', notFound);   
+app.use('/*splat', (req, res) => {    // ✅ Catch-all = fixed
+  res.status(404).json({message: 'Not found'});
+});
 
 app.get('/api/users/:id/profile-pic', async (req, res) => {
   const user = await UserModel.findById(req.params.id).select('profilePicture'); // <- profilePicture
