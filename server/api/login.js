@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import {body, validationResult} from 'express-validator'
 
 const loginRouter = express.Router()
-const JWT_SECRETKEY = process.env.JWT_SECRETKEY || 'supersecret123'
+const JWT_SECRETKEY = process.env.JWT_SECRET || 'supersecret123'
 
 loginRouter.post('/login', 
   [body('email').isEmail(),
