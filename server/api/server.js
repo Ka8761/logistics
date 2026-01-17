@@ -33,14 +33,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-  console.log('database connected')
-  console.log("MONGO_URI:", process.env.MONGO_URI ? "set" : "MISSING")})
-  .catch((err) => {
-    console.error('MongoDB connection error on Vercel:', err.message);
-    console.error('Full error:', err);
-  });
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000,  // 30s timeout for Vercel
+  socketTimeoutMS: 45000,
+  family: 4,  // Force IPv4 (Vercel IPv6 issues sometimes)
+})
+.then(() => console.log('database connected'))
+.catch((err) => {
+  console.error('MongoDB connection error on Vercel:', err.message);
+  console.error('Full error:', err);
+});
 
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
