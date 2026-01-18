@@ -5,7 +5,7 @@ import { FaYoutube } from "react-icons/fa";
 import TrackShipment from "./TrackShipment";
 import NavLogged from "./NavLogged";
 
-import bgImage from "../../src/assets/bgg.png"; // background image
+import bgImage from "../../src/assets/bgg.png";
 
 const Hero = () => {
   const backgroundStyle = {

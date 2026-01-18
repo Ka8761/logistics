@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
 import TrackShipment from "./TrackShipment";
 import NavLogged from "../../components/NavLogged";
-import bgImage from "../assets/bgg.png";
+import bgImage from "../../assets/bgg.png";
 
 const Hero = () => {
   const backgroundStyle = {
