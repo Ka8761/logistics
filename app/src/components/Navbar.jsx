@@ -17,7 +17,7 @@ const Navigationbar = () => {
   ];
 
   const handleNavClick = () => {
-    setExpanded(false); // ✅ CLOSES MENU ON CLICK
+    setExpanded(false);
   };
 
   return (
@@ -31,46 +31,51 @@ const Navigationbar = () => {
       style={{ 
         backgroundColor: '#000000',
         borderBottom: '1px solid #333333',
-        zIndex: 9999
+        zIndex: 9999,
+        width: '100vw',  // ✅ FIX 1: Full viewport width
+        position: 'fixed',
+        left: 0,
+        right: 0
       }}
       className="py-2 shadow-sm"
     >
-      <Container>
-        {/* Logo - LEFT SIDE */}
+      <Container fluid style={{ paddingLeft: '15px', paddingRight: '15px', maxWidth: '1400px', margin: '0 auto' }}>
+        {/* Logo */}
         <Navbar.Brand 
           as={Link} 
           to="/" 
           style={{ 
             fontWeight: 'bold', 
-            fontSize: '1.2rem',
+            fontSize: '1.1rem',
             color: '#ffffff',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            flexShrink: 0
           }}
         >
           <Image 
             src={logo} 
             alt="CargoExtra" 
-            height="40px" 
+            height="36px" 
             className="me-2"
             style={{ borderRadius: '4px' }}
           />
           CargoExtra
         </Navbar.Brand>
 
-        {/* Toggle button - ALWAYS VISIBLE */}
+        {/* Toggle - ALWAYS VISIBLE */}
         <Navbar.Toggle 
           aria-controls="navbar-nav" 
           style={{ 
             border: 'none', 
-            padding: '8px 12px',
+            padding: '6px 10px',
             outline: 'none',
-            background: 'transparent'
+            background: 'transparent',
+            flexShrink: 0
           }}
         />
 
-        {/* Menu Items */}
-        <Navbar.Collapse id="navbar-nav">
-          <Nav className="ms-auto" style={{ gap: '10px' }}>
+        <Navbar.Collapse id="navbar-nav" className="justify-content-end">
+          <Nav style={{ gap: '8px', flexWrap: 'nowrap' }}>
             {menuItems.map((item) => (
               <Nav.Link 
                 key={item.name}
@@ -79,15 +84,14 @@ const Navigationbar = () => {
                 onClick={handleNavClick}
                 style={{
                   color: '#d1d5db',
-                  fontWeight: '500',
-                  padding: '8px 12px',
+                  fontWeight: 500,
+                  padding: '6px 12px',
                   borderRadius: '6px',
-                  transition: 'all 0.2s ease',
+                  fontSize: '0.9rem',
                   whiteSpace: 'nowrap',
-                  fontSize: '0.95rem',
-                  maxWidth: '140px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  minWidth: 0,
+                  flexShrink: 1,
+                  transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.color = '#ffffff';
