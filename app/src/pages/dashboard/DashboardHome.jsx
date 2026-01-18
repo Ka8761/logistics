@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
 import TrackShipment from "./TrackShipment";
-import NavLogged from "./NavLogged";
+import NavLogged from "../../components/NavLogged";
 import bgImage from "../assets/bgg.png";
 
 const Hero = () => {
