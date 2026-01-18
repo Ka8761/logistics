@@ -10,8 +10,12 @@ const DashboardLayout = () => {
   const [showSideBar, setShowSideBar] = useState(true);
   const [showMinRect, setShowMinRect] = useState(null);
   const refContainer = useRef(null);
+  const { isLoggedIn } = useSelector((state) => state.user);
 
- const { isLoggedIn } = useSelector((state) => state.user);
+  // 🔥 PERFECT TOGGLE FUNCTION
+  const toggleSidebar = () => {
+    setShowSideBar(prev => !prev);  // true ↔ false toggle
+  };
 
   const handleOutsideClick = (e) => {
     if (refContainer.current && !refContainer.current.contains(e.target)) {
@@ -21,21 +25,16 @@ const DashboardLayout = () => {
 
   return (
     <>
-      {/* SHOW CORRECT NAVBAR */}
+      {/* NAVBAR WITH TOGGLE */}
       {isLoggedIn ? (
-        <NavLogged
-          showSidebar={showSideBar}
-          setShowSidebar={setShowSideBar}
-        />
+        <NavLogged toggleSidebar={toggleSidebar} />
       ) : (
         <Navigationbar />
       )}
 
       <div className="dashboard-wrapper">
-        {/* LEFT SIDEBAR */}
-        <aside
-          className={`sidebar ${showSideBar ? "open" : "closed"}`}
-        >
+        {/* LEFT SIDEBAR - Shows/Hides based on showSideBar */}
+        <aside className={`sidebar ${showSideBar ? "open" : "closed"}`}>
           <LeftIcons
             setShowMinRect={setShowMinRect}
             showMinRect={showMinRect}
@@ -54,16 +53,14 @@ const DashboardLayout = () => {
 
         {/* MAIN CONTENT */}
         <main
-          className={`main-content ${
-            showSideBar ? "with-sidebar" : ""
-          }`}
+          className={`main-content ${showSideBar ? "with-sidebar" : ""}`}
           onClick={handleOutsideClick}
         >
           <Outlet />
         </main>
       </div>
 
-      {/* INLINE CSS (AS YOU REQUESTED) */}
+      {/* INLINE CSS - UNCHANGED */}
       <style>{`
         .dashboard-wrapper {
           display: flex;
@@ -116,7 +113,6 @@ const DashboardLayout = () => {
           .main-content.with-sidebar {
             margin-left: 0;
           }
-
           .mini-rect-wrapper {
             left: 60px;
           }
