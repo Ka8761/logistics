@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
 import Track from "../../Track"
 import { useSelector } from "react-redux";
-import NavLoggedIn from "./NavLogged";
+import NavLogged from "./NavLogged";
 
 import bgImage from "../assets/bgg.png"; // background image
 
@@ -42,7 +42,7 @@ const Hero = () => {
 
   return (
     <div style={backgroundStyle}>
-      {token && <NavLoggedIn />} {/* only show if logged in */}
+      {token && <NavLogged />} {/* only show if logged in */}
 
       <div style={heroStyle}>
         <Container>
