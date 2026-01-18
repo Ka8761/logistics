@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; 
 import logo from '../assets/logo.png';
+import './Navbar.css'
 
 const Navigationbar = () => {
   const [expanded, setExpanded] = useState(false);
