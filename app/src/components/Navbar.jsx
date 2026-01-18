@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Navigationbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const menuItems = [
     { name: 'Home', path: '/' },
@@ -16,21 +16,37 @@ const Navigationbar = () => {
     { name: 'Register', path: '/register' },
   ];
 
+  const handleNavClick = () => {
+    setExpanded(false); // ✅ CLOSES MENU ON CLICK
+  };
+
   return (
     <Navbar 
+      expanded={expanded}
+      onToggle={() => setExpanded(!expanded)}
       bg="dark" 
       variant="dark" 
       expand="md" 
-      fixed="top" 
-      className="py-2 shadow-sm"
+      fixed="top"
       style={{ 
         backgroundColor: '#000000',
-        borderBottom: '1px solid #333333'
+        borderBottom: '1px solid #333333',
+        zIndex: 9999
       }}
+      className="py-2 shadow-sm"
     >
       <Container>
         {/* Logo - LEFT SIDE */}
-        <Navbar.Brand as={Link} to="/" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+        <Navbar.Brand 
+          as={Link} 
+          to="/" 
+          style={{ 
+            fontWeight: 'bold', 
+            fontSize: '1.2rem',
+            color: '#ffffff',
+            whiteSpace: 'nowrap'
+          }}
+        >
           <Image 
             src={logo} 
             alt="CargoExtra" 
@@ -41,32 +57,37 @@ const Navigationbar = () => {
           CargoExtra
         </Navbar.Brand>
 
-        {/* Toggle button for mobile */}
+        {/* Toggle button - ALWAYS VISIBLE */}
         <Navbar.Toggle 
           aria-controls="navbar-nav" 
-          onClick={() => setIsOpen(!isOpen)}
           style={{ 
             border: 'none', 
             padding: '8px 12px',
-            outline: 'none'
+            outline: 'none',
+            background: 'transparent'
           }}
         />
 
-        {/* Desktop & Mobile Menu */}
-        <Navbar.Collapse id="navbar-nav" in={isOpen}>
-          <Nav className="ms-auto" style={{ gap: '20px' }}>
+        {/* Menu Items */}
+        <Navbar.Collapse id="navbar-nav">
+          <Nav className="ms-auto" style={{ gap: '10px' }}>
             {menuItems.map((item) => (
               <Nav.Link 
                 key={item.name}
                 as={Link} 
                 to={item.path}
+                onClick={handleNavClick}
                 style={{
                   color: '#d1d5db',
                   fontWeight: '500',
-                  padding: '8px 16px !important',
-                  borderRadius: '8px',
-                  margin: '0 2px',
-                  transition: 'all 0.2s ease'
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  transition: 'all 0.2s ease',
+                  whiteSpace: 'nowrap',
+                  fontSize: '0.95rem',
+                  maxWidth: '140px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.color = '#ffffff';
