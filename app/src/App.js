@@ -2,10 +2,9 @@ import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./styles/dashboard.css";
-
+import { ProtectedRoute } from './ProtectedRoute';
 /* PUBLIC NAVBAR */
 import Navigationbar from './components/Navbar';
-
 /* LOGGED-IN NAVBAR */
 import NavLogged from './components/NavLogged.jsx';
 
@@ -35,8 +34,6 @@ import How from './pages/dashboard/How';
 import IdentityVerify from './pages/dashboard/IdentityVerify';
 import ChangePassword from './pages/dashboard/ChangePassword';
 import EditProfile from './pages/EditProfile';
-
-import ProtectedRoute from './ProtectedRoute'; 
 
 function App() {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
