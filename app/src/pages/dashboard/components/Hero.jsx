@@ -4,9 +4,9 @@ import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
 import Track from "../../Track"
 import { useSelector } from "react-redux";
-import NavLogged from "./NavLogged";
+import NavLogged from "../../../components/NavLogged";
 
-import bgImage from "../assets/bgg.png"; // background image
+import bgImage from "../assets/bgg.png";
 
 const Hero = () => {
   const { token } = useSelector((state) => state.user);
