@@ -115,7 +115,7 @@ const EditProfile = () => {
           const delay = 1000;
           const loadServerImage = (attempt = 1) => {
             const cacheBuster = Date.now();
-            const freshUrl = `${process.env.REACT_APP_API_URL}/api/users/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
+            const freshUrl = `${process.env.REACT_APP_API_URL}/api/users/${updatedUser._id || updateUser.id}/profile-pic?t=${cacheBuster}`;
             const img = new Image();
             img.src = freshUrl;
             img.onload = () => {
