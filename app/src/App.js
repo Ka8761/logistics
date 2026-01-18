@@ -13,6 +13,7 @@ import NavLogged from './components/NavLogged.jsx';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AboutUs from './components/AboutUs.jsx';
 import ForgotPswd from './pages/ForgotPswd';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
@@ -35,7 +36,7 @@ import IdentityVerify from './pages/dashboard/IdentityVerify';
 import ChangePassword from './pages/dashboard/ChangePassword';
 import EditProfile from './pages/EditProfile';
 
-import ProtectedRoute from './ProtectedRoute'; // ✅ UNCOMMENT THIS
+import ProtectedRoute from './ProtectedRoute'; 
 
 function App() {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
@@ -52,6 +53,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path='/about' element={<AboutUs/>}/>
         <Route path="/forgot" element={<ForgotPswd />} />
 
         {/* ✅ PROTECTED DASHBOARD - WRAPPED IN ProtectedRoute */}
