@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container"; 
 import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
-import Track from "../../Track";
+import Track from "../../Track"
 import { useSelector } from "react-redux";
 import NavLoggedIn from "./NavLogged";
 

@@ -16,7 +16,7 @@ import AboutUs from './components/AboutUs.jsx';
 import ForgotPswd from './pages/ForgotPswd';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
-import Track from './pages/Track';
+import Track from './pages/Track.jsx';
 
 /* DASHBOARD */
 import DashboardLayout from './pages/dashboard/DashboardLayer';
