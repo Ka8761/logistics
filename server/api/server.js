@@ -15,18 +15,23 @@ dotenv.config({ path: './config/.env' })
 const app = express();
 
 //CORS FIRST
-const allowedOriginlink = 'https://logistics-cargoextra.vercel.app';
+app.use(cors({
+  origin:['http://localhost:3001', 'https://logistics-cargoextra.vercel.app'],
+  credentials: true
+}));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', allowedOriginlink);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// const allowedOriginlink = 'https://logistics-cargoextra.vercel.app';
+
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', allowedOriginlink);
+//   res.header('Access-Control-Allow-Credentials', 'true');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   if (req.method === 'OPTIONS') {
+//     return res.sendStatus(200);
+//   }
+//   next();
+// });
 
 app.options('*', cors());
 
@@ -37,8 +42,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 30000,  // 30s timeout for Vercel
-  socketTimeoutMS: 45000,
+  serverSelectionTimeoutMS: 40000,  // 30s timeout for Vercel
+  socketTimeoutMS: 55000,
   family: 4,  // Force IPv4 (Vercel IPv6 issues sometimes)
 })
 .then(() => console.log('database connected'))
@@ -49,10 +54,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
 app.use('/api', registerRouter)
 app.use('/api/auth', loginRouter)
-app.use('/uploads', express.static('uploads'));
-app.get('/*splat', notFound);   
-app.use('/*splat', (req, res) => {    // ✅ Catch-all = fixed
-  res.status(404).json({message: 'Not found'});
+app.use('/uploads', express.static('uploads')); 
+app.get('/*splat', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
 app.get('/api/users/:id/profile-pic', async (req, res) => {
@@ -86,5 +90,9 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
 export default app;

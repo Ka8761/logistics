@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useState, useRef } from "react";
-// import { useSelector } from "react-redux";
-// import NavLogged from "../../components/NavLogged";
-// import Navigationbar from "../../components/Navbar";
+import { useSelector } from "react-redux";
+import NavLogged from "../../components/NavLogged";
+import Navigationbar from "../../components/Navbar";
 import LeftIcons from "./components/LeftIcons";
 import MiniRect from "./components/MiniRect";
 
@@ -11,7 +11,7 @@ const DashboardLayout = () => {
   const [showMinRect, setShowMinRect] = useState(null);
   const refContainer = useRef(null);
 
- // const { isLoggedIn } = useSelector((state) => state.user);
+ const { isLoggedIn } = useSelector((state) => state.user);
 
   const handleOutsideClick = (e) => {
     if (refContainer.current && !refContainer.current.contains(e.target)) {
@@ -22,14 +22,14 @@ const DashboardLayout = () => {
   return (
     <>
       {/* SHOW CORRECT NAVBAR */}
-      {/* {isLoggedIn ? (
+      {isLoggedIn ? (
         <NavLogged
           showSidebar={showSideBar}
           setShowSidebar={setShowSideBar}
         />
       ) : (
         <Navigationbar />
-      )} */}
+      )}
 
       <div className="dashboard-wrapper">
         {/* LEFT SIDEBAR */}

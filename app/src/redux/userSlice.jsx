@@ -40,7 +40,7 @@ export const registerUser = createAsyncThunk(
   "user/register",
   async (signupdetails, { rejectWithValue }) => {
     try {
-      const response = await api.post("/register", signupdetails);
+      const response = await api.post("/api/register", signupdetails);
       console.log("Register response:", response.data); //log error passing
       return response.data;
     } catch (error) {
@@ -67,7 +67,7 @@ export const updateUser = createAsyncThunk(
       if (!userId) {
         throw new Error("User ID not found – please log in again");
       }
-      const response = await api.patch(`/update/${userId}`, formData, {
+      const response = await api.patch(`/api/update/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -79,7 +79,8 @@ if (storedUserInfo) {
     ...response.data.user,
     profilePicture: undefined,
     profilePic: undefined,
-    profileImage: undefined
+    profileImage: undefined,
+   profilePictureUrl: response.data.user.profilePictureUrl, // Retain the URL if available
   };
   storedUserInfo.user = cleanUser;
   localStorage.setItem("userInfo", JSON.stringify(storedUserInfo));

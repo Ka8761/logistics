@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import {body, validationResult} from 'express-validator'
 
 const loginRouter = express.Router()
-const JWT_SECRETKEY = process.env.JWT_SECRET 
+//const JWT_SECRET = process.env.JWT_SECRET 
 
 loginRouter.post('/login', 
   [body('email').isEmail(),
@@ -34,7 +34,7 @@ loginRouter.post('/login',
 
     //if no issues/ all entires are good
     const userPayload = {id:existingUser._id, email:existingUser.email, name:existingUser.name}
-    const jwt_token = jwt.sign(userPayload, JWT_SECRETKEY, {expiresIn:'1h'})
+    const jwt_token = jwt.sign(userPayload, process.env.JWT_SECRET, {expiresIn:'1h'})
     
 
     return res.status(200).json({

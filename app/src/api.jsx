@@ -1,8 +1,10 @@
 import axios from 'axios';
 //'http://localhost:5000/api'
+//process.env.REACT_APP_API_URL, 
+//'http://10.232.4.227:3000'
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,  // ← removed trailing space
+    baseURL: process.env.REACT_APP_API_URL, // ← removed trailing space
     headers: { "Content-Type": "application/json" }
 });
 

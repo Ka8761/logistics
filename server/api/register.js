@@ -8,19 +8,20 @@ const registerRouter = express.Router();
 registerRouter.post(
   "/register",
   userValidationRules,
-
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) { //if its is NOT true that errorsisempty....then......
-      return res.status(401).json({ errors: errors.array() }); //..then return the errors in an arrary form
+    if (!errors.isEmpty()) {
+      return res.status(401).json({ errors: errors.array() });
     }
-if (req.method === 'POST') {
-    console.log('POST REGISTER HIT:', req.body);
-    res.json({ success: true, message: 'register works' });
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
-  }
-  
+
+    // 🔥 DELETE THESE LINES 15-20 - THEY SEND RESPONSE TOO EARLY!
+    // if (req.method === 'POST') {
+    //   console.log('POST REGISTER HIT:', req.body);
+    //   res.json({ success: true, message: 'register works' });  ← THIS BREAKS IT!
+    // } else {
+    //   res.status(405).json({ error: 'Method not allowed' });
+    // }
+
     const {
       firstName,
       lastName,
@@ -77,13 +78,12 @@ if (req.method === 'POST') {
         },
       });
     } catch (error) {
-      console.error("Error registering user:", err.stack);
+      console.error("Error registering user:", error.stack);
       return res
         .status(500)
         .json({ error: error.message });
     }
   }
 );
-
 
 export default registerRouter;

@@ -11,7 +11,9 @@ const EditProfile = () => {
   const [email, setEmail] = useState(data?.email || "");
   const [phoneNumber, setPhoneNumber] = useState(data?.phoneNumber || "");
   const [phoneCodes, setPhoneCodes] = useState(data?.phoneCodes || "");
-  const [paymentCurrency, setPaymentCurrency] = useState(data?.paymentCurrency || "");
+  const [paymentCurrency, setPaymentCurrency] = useState(
+    data?.paymentCurrency || "",
+  );
   const [timeZone, setTimeZone] = useState(data?.timeZone || "");
   const [localError, setLocalError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
@@ -19,24 +21,27 @@ const EditProfile = () => {
   const [showUpload, setShowUpload] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
-
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const timeZones = Intl.supportedValuesOf("timeZone");
 
- useEffect(() => {
-  if (data?._id) {
-    if (data.profilePictureUrl) {        // 1. Use pre-converted image (if exists)
-      setImagePreview(data.profilePictureUrl);
-    } else {                             // 2. Fetch fresh from server endpoint
+  useEffect(() => {
+    if (data?._id) {
       const cacheBuster = Date.now();
       const url = `${process.env.REACT_APP_API_URL}/api/users/${data._id}/profile-pic?t=${cacheBuster}`;
       setImagePreview(url);
       setImageKey(cacheBuster);
+    } else {
+      setImagePreview(null);
     }
-  } else {
-    setImagePreview(null);
-  }
-}, [data?._id, data?.updatedAt]);
+  }, [data?._id]);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview && imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   // Handle file selection → show local preview immediately
   const handleProfilepicChange = (e) => {
@@ -87,46 +92,66 @@ const EditProfile = () => {
       console.log("Uploading file:", selectedFile.name, selectedFile.size);
       formData.append("profileImage", selectedFile);
     }
-if (selectedFile) {
-  console.log("File being sent:", selectedFile.name, selectedFile.type, selectedFile.size);
-} else {
-  console.log("No file selected for upload");
-}
+    if (selectedFile) {
+      console.log(
+        "File being sent:",
+        selectedFile.name,
+        selectedFile.type,
+        selectedFile.size,
+      );
+    } else {
+      console.log("No file selected for upload");
+    }
     try {
       const updatedUser = await dispatch(updateUser(formData)).unwrap();
       // updatedUser is now the user object { _id, email, ... }
       console.log("Updated user:", updatedUser);
       console.log("image", updatedUser.profileImage);
-
       if (updatedUser?._id) {
-        if (imagePreview && imagePreview.startsWith("blob:")) {
-          URL.revokeObjectURL(imagePreview);
+        setUpdateSuccess(true);
+        setTimeout(() => setUpdateSuccess(false), 3000);
+        if (selectedFile) {
+          const maxAttempts = 10;
+          const delay = 1000;
+          const loadServerImage = (attempt = 1) => {
+            const cacheBuster = Date.now();
+            const freshUrl = `${process.env.REACT_APP_API_URL}/api/users/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
+            const img = new Image();
+            img.src = freshUrl;
+            img.onload = () => {
+              const oldPreview = imagePreview;
+              setImagePreview(freshUrl);
+              setSelectedFile(null);
+              setImageKey(Date.now());
+            };
+            img.onerror = () => {
+              if (attempt < maxAttempts) {
+                setTimeout(() => loadServerImage(attempt + 1), delay);
+              } else {
+                console.error("Failed to load server image after retries");
+                setLocalError("Image uploaded, but couldn't load from server after several attempts.");
+                const oldPreview = imagePreview;
+                setImagePreview(freshUrl);
+                setSelectedFile(null);
+                setImageKey(Date.now());
+              }
+            };
+          };
+          loadServerImage();
         }
-        setSelectedFile(null);
-
-        // 3. Immediately reload image from server with fresh timestamp
-        const cacheBuster = Date.now();
-        const freshUrl = `${process.env.REACT_APP_API_URL}/api/users/${updatedUser._id}/profile-pic?t=${cacheBuster}`;
-        setImagePreview(freshUrl);
-        setImageKey(cacheBuster);
-
-        // 4. Extra safety refresh after small delay (helps with slow disk/fs sync in dev)
-        setTimeout(() => {
-          const finalBuster = Date.now();
-          const finalUrl = `${process.env.REACT_APP_API_URL}/api/users/${updatedUser._id}/profile-pic?t=${finalBuster}`;
-          setImagePreview(finalUrl);
-          setImageKey(finalBuster);
-        }, 400);
       }
-
     } catch (err) {
       console.error("❌ Update FAILED:", err);
 
       let errorMsg = "Update failed. Please try again.";
 
       // Improve user-facing messages based on common errors
-      if (err.message?.includes("Network") || err.message?.includes("ECONNREFUSED")) {
-        errorMsg = "Cannot reach the server — is the backend running on port 5000?";
+      if (
+        err.message?.includes("Network") ||
+        err.message?.includes("ECONNREFUSED")
+      ) {
+        errorMsg =
+          "Cannot reach the server — is the backend running on port 5000?";
       } else if (err.message?.includes("User ID not found")) {
         errorMsg = "Session issue — please log in again.";
       } else if (err?.response?.status === 400) {
@@ -137,7 +162,8 @@ if (selectedFile) {
         errorMsg = err.response.data.message;
       } else if (err?.response?.data?.errors) {
         // If backend sent validation errors
-        const firstError = err.response.data.errors[0]?.msg || "Validation failed";
+        const firstError =
+          err.response.data.errors[0]?.msg || "Validation failed";
         errorMsg = firstError;
       }
 
@@ -149,7 +175,10 @@ if (selectedFile) {
   };
 
   return (
-    <div className="p-4" style={{ backgroundColor: "#f0f0f0", minHeight: "100vh" }}>
+    <div
+      className="p-4"
+      style={{ backgroundColor: "#f0f0f0", minHeight: "100vh" }}
+    >
       {/* Top Breadcrumb */}
       <div className="mb-4 d-flex" style={{ height: "50px" }}>
         <h3 className="me-3">Edit Profile</h3>
@@ -159,7 +188,10 @@ if (selectedFile) {
       <Row>
         {/* Left Column - Profile Picture */}
         <Col md={6} sm={12} className="mb-4" style={{ position: "relative" }}>
-          <Card className="text-center p-3" style={{ backgroundColor: "#ffffff" }}>
+          <Card
+            className="text-center p-3"
+            style={{ backgroundColor: "#ffffff" }}
+          >
             <div className="mb-3">
               <img
                 key={imageKey}
@@ -172,7 +204,6 @@ if (selectedFile) {
                   e.target.onerror = null;
                   e.target.src = "/default-profile.png";
                 }}
-                crossOrigin="anonymous"
                 referrerPolicy="no-referrer"
               />
             </div>
@@ -192,7 +223,9 @@ if (selectedFile) {
             }}
           >
             <Card.Header style={{ backgroundColor: "#c4c2c2ff" }}>
-              <p style={{ fontSize: "20px", margin: 0 }}>Change Profile Picture</p>
+              <p style={{ fontSize: "20px", margin: 0 }}>
+                Change Profile Picture
+              </p>
             </Card.Header>
             <Card.Body>
               <h3>Upload Picture Below to Update:</h3>
@@ -206,7 +239,9 @@ if (selectedFile) {
                 onClick={() => profilepicRef.current.click()}
               >
                 <p>Tap here to Upload Picture. Drag and drop if you're on PC</p>
-                <p style={{ fontSize: "12px", color: "#666" }}>Accepted: JPG, PNG (Max 5MB)</p>
+                <p style={{ fontSize: "12px", color: "#666" }}>
+                  Accepted: JPG, PNG (Max 5MB)
+                </p>
                 <input
                   type="file"
                   accept=".png,.jpg,.jpeg"
@@ -214,7 +249,11 @@ if (selectedFile) {
                   onChange={handleProfilepicChange}
                   style={{ display: "none" }}
                 />
-                {localError && <p style={{ color: "red", marginTop: "10px" }}>{localError}</p>}
+                {localError && (
+                  <p style={{ color: "red", marginTop: "10px" }}>
+                    {localError}
+                  </p>
+                )}
               </div>
             </Card.Body>
           </Card>
@@ -248,13 +287,21 @@ if (selectedFile) {
 
               <Form.Group className="mb-3">
                 <Form.Label>First Name</Form.Label>
-                <Form.Control type="text" value={data?.firstName || ""} disabled />
+                <Form.Control
+                  type="text"
+                  value={data?.firstName || ""}
+                  disabled
+                />
                 <hr />
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>Last Name</Form.Label>
-                <Form.Control type="text" value={data?.lastName || ""} disabled />
+                <Form.Control
+                  type="text"
+                  value={data?.lastName || ""}
+                  disabled
+                />
                 <hr />
               </Form.Group>
 
@@ -331,8 +378,25 @@ if (selectedFile) {
                 {isUpdating ? "Updating..." : "Update Profile"}
               </Button>
 
+              {updateSuccess && (
+                <p
+                  style={{
+                    color: "green",
+                    marginTop: "10px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  ✅ Profile updated successfully!
+                </p>
+              )}
               {localError && (
-                <p style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+                <p
+                  style={{
+                    color: "red",
+                    marginTop: "10px",
+                    fontWeight: "bold",
+                  }}
+                >
                   {localError}
                 </p>
               )}
