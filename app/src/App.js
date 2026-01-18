@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./styles/dashboard.css";
 
@@ -55,6 +55,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path='/about' element={<AboutUs/>}/>
         <Route path="/forgot" element={<ForgotPswd />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
 
         {/* ✅ PROTECTED DASHBOARD - WRAPPED IN ProtectedRoute */}
         <Route element={<ProtectedRoute />}>
