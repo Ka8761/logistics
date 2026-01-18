@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
 import TrackShipment from "./TrackShipment";
-import NavLoggedIn from "./NavLoggedIn";
+import NavLogged from "./NavLogged";
 import bgImage from "../assets/bgg.png";
 
 const Hero = () => {
@@ -53,7 +53,7 @@ const Hero = () => {
   return (
     <div style={backgroundStyle}>
       <div style={overlayStyle}></div>
-      <NavLoggedIn />
+      <NavLogged />
       <div style={heroStyle}>
         <Container fluid style={{ maxWidth: "1400px", paddingLeft: "15px", paddingRight: "15px" }}>
           <h1
