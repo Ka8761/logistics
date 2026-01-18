@@ -35,57 +35,47 @@ import IdentityVerify from './pages/dashboard/IdentityVerify';
 import ChangePassword from './pages/dashboard/ChangePassword';
 import EditProfile from './pages/EditProfile';
 
-import ProtectedRoute from './ProtectedRoute';
-// import AboutUs from './components/AboutUs';
-// import StartShip from './components/StartShip';
+import ProtectedRoute from './ProtectedRoute'; // ✅ UNCOMMENT THIS
 
 function App() {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  //const { token } = useSelector((state) => state.user);
 
   return (
     <BrowserRouter>
-
       {isLoggedIn ? <NavLogged /> : <Navigationbar />}
-{/* {token && <NavLogged />} */}
+      
       <Routes>
+        {/* ✅ PUBLIC PAGES - NO PROTECTION */}
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<Services />} />
-         {/* <Route path="/about" element={<AboutUs />} />
-          <Route path="/rates" element={<StartShip />} /> */}
         <Route path="/track" element={<Track />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<ForgotPswd />} />
 
-        {/* DASHBOARD */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardHome />} />
-          <Route path="shipment" element={<DashboardShipment />} />
-          <Route path="procurement-form" element={<ProcurementForm />} />
-          <Route path="my-procurements" element={<MyProcurement />} />
-          <Route path="pickup-form" element={<PickUpForm />} />
-          <Route path="my-pickups" element={<MyPickUps />} />
-          <Route path="new-ticket" element={<NewTicket />} />
-          <Route path="my-tickets" element={<MyTickets />} />
-          <Route path="support" element={<ViewTicket />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="how" element={<How />} />
-
-          {/* PROFILE */}
-          <Route path="profile">
-            <Route path="edit-profile" element={<EditProfile />} />
-            <Route path="update-password" element={<ChangePassword />} />
-            <Route path="address-book" element={<IdentityVerify />} />
-            <Route path="kyc" element={<IdentityVerify />} />
+        {/* ✅ PROTECTED DASHBOARD - WRAPPED IN ProtectedRoute */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="shipment" element={<DashboardShipment />} />
+            <Route path="procurement-form" element={<ProcurementForm />} />
+            <Route path="my-procurements" element={<MyProcurement />} />
+            <Route path="pickup-form" element={<PickUpForm />} />
+            <Route path="my-pickups" element={<MyPickUps />} />
+            <Route path="new-ticket" element={<NewTicket />} />
+            <Route path="my-tickets" element={<MyTickets />} />
+            <Route path="support" element={<ViewTicket />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="how" element={<How />} />
+            
+            {/* PROFILE */}
+            <Route path="profile">
+              <Route path="edit-profile" element={<EditProfile />} />
+              <Route path="update-password" element={<ChangePassword />} />
+              <Route path="address-book" element={<IdentityVerify />} />
+              <Route path="kyc" element={<IdentityVerify />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
