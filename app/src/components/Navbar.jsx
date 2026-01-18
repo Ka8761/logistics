@@ -32,7 +32,7 @@ const Navigationbar = () => {
         backgroundColor: '#000000',
         borderBottom: '1px solid #333333',
         zIndex: 9999,
-        width: '100vw',  // ✅ FIX 1: Full viewport width
+        width: '100vw',  // keep this
         position: 'fixed',
         left: 0,
         right: 0
@@ -74,8 +74,18 @@ const Navigationbar = () => {
           }}
         />
 
-        <Navbar.Collapse id="navbar-nav" className="justify-content-end">
-          <Nav style={{ gap: '8px', flexWrap: 'nowrap' }}>
+        <Navbar.Collapse 
+          id="navbar-nav" 
+          className="justify-content-end"
+        >
+          <Nav 
+            style={{ 
+              gap: '8px',
+              // Removed nowrap → allows wrapping if needed
+              // On mobile (when collapsed), make it vertical + right-aligned
+            }}
+            className="flex-column flex-md-row align-items-md-center align-items-end"
+          >
             {menuItems.map((item) => (
               <Nav.Link 
                 key={item.name}

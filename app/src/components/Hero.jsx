@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { FaYoutube } from "react-icons/fa";
 import TrackShipment from "./TrackShipment";
-import NavLoggedIn from "./NavLogged";
+import NavLogged from "./NavLogged";
 
 import bgImage from "../assets/bgg.png"; // background image
 
@@ -48,7 +48,7 @@ const Hero = () => {
     <div style={backgroundStyle}>
       <div style={overlayStyle}></div> {/* dark overlay */}
 
-      <NavLoggedIn /> {/* optional: navbar if user logged in */}
+      <NavLogged/> {/* optional: navbar if user logged in */}
 
       <div style={heroStyle}>
         <Container>
